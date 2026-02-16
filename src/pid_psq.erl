@@ -42,7 +42,7 @@ peek_min(PSQ) ->
 
 -spec peek_min_priority(psq:psq()) -> undefined | {ok, {pid(), psq:priority()}}.
 peek_min_priority(PSQ) ->
-    maybe(psq:find_min(PSQ), undefined, fun ({_, Prio, Pid}) -> {ok, {Pid, Prio}} end).
+    'maybe'(psq:find_min(PSQ), undefined, fun ({_, Prio, Pid}) -> {ok, {Pid, Prio}} end).
 
 %% @doc Get `pid' with minimal priority and increase its priority by 1.
 -spec get_min(psq:psq()) -> undefined | {ok, {pid(), psq:psq()}}.
@@ -64,7 +64,7 @@ get_min_priority(PSQ) ->
                                     (nothing) ->
                                         {nothing, nothing}
                                 end, PSQ),
-    maybe(Res, undefined, fun (V) -> {ok, {V, PSQ1}} end).
+    'maybe'(Res, undefined, fun (V) -> {ok, {V, PSQ1}} end).
 
 -spec inc_priority(pid(), psq:psq()) -> undefined | {ok, psq:psq()}.
 inc_priority(Pid, PSQ) ->
@@ -81,11 +81,11 @@ upd_priority(Pid, SetF, PSQ) ->
                                 (nothing) ->
                                     {nothing, nothing}
                             end, Key, PSQ),
-    maybe(Res, undefined, fun (_Prio) -> {ok, PSQ1} end).
+    'maybe'(Res, undefined, fun (_Prio) -> {ok, PSQ1} end).
 
-maybe(nothing, D, _F) ->
+'maybe'(nothing, D, _F) ->
     D;
-maybe({just, V}, _D, F) ->
+'maybe'({just, V}, _D, F) ->
     F(V).
 
 pid_to_int(Pid) ->

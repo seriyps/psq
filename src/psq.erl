@@ -16,9 +16,9 @@
          insert_view/4, delete_view/2, min_view/1, at_most_view/2
         ]).
 
--export_type([maybe/1, psq/0, priority/0]).
+-export_type(['maybe'/1, psq/0, priority/0]).
 
--type maybe(V) :: nothing | {just, V}.
+-type 'maybe'(V) :: nothing | {just, V}.
 
 -type nat() :: non_neg_integer().
 
@@ -93,7 +93,7 @@ psq_size (#bin{left=L, right=R}) ->
 member(Key, PSQ) ->
     is_just(lookup(Key, PSQ)).
 
--spec lookup(key(), psq()) -> maybe({priority(), value()}).
+-spec lookup(key(), psq()) -> 'maybe'({priority(), value()}).
 lookup(Key, PSQ) ->
     case PSQ of
         nil ->
@@ -117,7 +117,7 @@ lookup(Key, PSQ) ->
             end
     end.
 
--spec find_min(psq()) -> maybe({key(), priority(), value()}).
+-spec find_min(psq()) -> 'maybe'({key(), priority(), value()}).
 find_min(nil) -> nothing;
 find_min(#tip{key=K, prio=P, val=V})       -> {just, {K, P, V}};
 find_min(#bin{key=K, prio=P, val=V})       -> {just, {K, P, V}}.
@@ -242,7 +242,7 @@ delete_min(PSQ) ->
 %% @doc Alters the value `Value' at `Key',
 %% or absence thereof. Can be used to insert, delete, or update a value
 %% in a queue. It also allows you to calculate an additional value `B'.
--spec alter(fun ((maybe({Prio, Value})) -> {B, maybe({Prio, Value})}), Key, PSQ) ->
+-spec alter(fun (('maybe'({Prio, Value})) -> {B, 'maybe'({Prio, Value})}), Key, PSQ) ->
                    {B, PSQ} when
       Key :: key()
       , Value :: value()
@@ -267,7 +267,7 @@ alter(F, K, PSQ) ->
 %% A variant of `alter' which works on the element with the
 %% minimum priority. Unlike `alter', this variant also allows you to change the
 %% key of the element.
--spec alter_min(fun ((maybe({key(), priority(), value()})) -> {B, maybe({key(), priority(), value()})}), psq())
+-spec alter_min(fun (('maybe'({key(), priority(), value()})) -> {B, 'maybe'({key(), priority(), value()})}), psq())
                -> {B, psq()}.
 alter_min(F, PSQ) ->
     case PSQ of
@@ -351,7 +351,7 @@ keys(PSQ) ->
 %% is already present in the queue, then the evicted priority and value can be
 %% found the first element of the returned tuple.
 %% @end
--spec insert_view(key(), priority(), value(), psq()) -> {maybe({priority(), value()}), psq()}.
+-spec insert_view(key(), priority(), value(), psq()) -> {'maybe'({priority(), value()}), psq()}.
 insert_view(K, P, V, PSQ) ->
     case delete_view(K, PSQ) of
         nothing ->
@@ -364,7 +364,7 @@ insert_view(K, P, V, PSQ) ->
 %% the key was present, the associated priority and value are returned in
 %% addition to the updated queue.
 %% @end
--spec delete_view(key(), psq()) -> maybe({priority(), value(), psq()}).
+-spec delete_view(key(), psq()) -> 'maybe'({priority(), value(), psq()}).
 delete_view(K, PSQ) ->
     case delete_view_1(K, PSQ) of
       {_, nothing} -> nothing;
@@ -397,7 +397,7 @@ delete_view_1(K, PSQ) ->
 
 %% Retrieve the binding with the least priority, and the
 %% rest of the queue stripped of that binding.
--spec min_view(psq()) -> maybe({key(), priority(), value(), psq()}).
+-spec min_view(psq()) -> 'maybe'({key(), priority(), value(), psq()}).
 min_view(PSQ) ->
     case PSQ of
         nil -> nothing;
